@@ -77,10 +77,7 @@ def get_sentence_embedding(sentence):
 # (That is, for each embedding vector, we calculate mean over its components.)
 full_df_filtered['report'] = full_df_filtered['report'].apply(lambda x: get_sentence_embedding(x).mean())
 
-# Construct dataset with selected features:
-#   - report (numeric summary from text)
-#   - rr_interval, p_end, qrs_onset, qrs_end, t_end, p_axis, qrs_axis, t_axis
-#   - Healthy_Status (target)
+
 table_data = full_df_filtered[['report','rr_interval','p_end','qrs_onset','qrs_end','t_end',
                                'p_axis','qrs_axis','t_axis','Healthy_Status']].copy()
 print("Prepared table_data shape:", table_data.shape)
@@ -104,9 +101,6 @@ pipeline.fit(X_train, y_train)
 y_pred = pipeline.predict(X_test)
 y_prob = pipeline.predict_proba(X_test)[:, 1]
 
-# ----------------------------
-# 7. Evaluate the Model
-# ----------------------------
 acc = accuracy_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 auc = roc_auc_score(y_test, y_prob)
@@ -121,9 +115,6 @@ print("Confusion Matrix:")
 print(cm)
 print("\nClassification Report:\n", report)
 
-# ----------------------------
-# 8. (Optional) Visualization of Results
-# ----------------------------
 # For example, a boxplot of a few features to check distributions post-cleaning
 plt.figure(figsize=(12, 6))
 sns.boxplot(data=table_data.drop(columns=['Healthy_Status']))
